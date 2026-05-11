@@ -170,6 +170,8 @@ def get_mother_name(name: str) -> str:
         "Page infobox has no mother information"
     )
     match = get_match(infobox_text, pattern, error_text)
+
+    return match.group("mother")
     
 
 # below are a set of actions. Each takes a list argument and returns a list of answers
