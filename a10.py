@@ -152,7 +152,13 @@ def get_spouse_name(name: str) -> str:
     """
     infobox_text = clean_text(get_first_infobox_text(get_page_html(name)))
     print(infobox_text)
-    pattern = r""
+    pattern = r"Spouse(?:.*?)(?P<spouse>[A-Z][A-Za-z .-]+)"
+    error_text = (
+        "Page infobox has no spouse information"
+    )
+    match = get_match(infobox_text, pattern, error_text)
+
+    return match.group("spouse")
 
 def get_mother_name(name: str) -> str:
     """Gets the mother name of the given person
@@ -165,13 +171,32 @@ def get_mother_name(name: str) -> str:
     """
     infobox_text = clean_text(get_first_infobox_text(get_page_html(name)))
     print(infobox_text)
-    pattern = r""
+    pattern = r"Mother(?:.*?)(?P<mother>[A-Z][A-Za-z .-]+)"
     error_text = (
         "Page infobox has no mother information"
     )
     match = get_match(infobox_text, pattern, error_text)
 
     return match.group("mother")
+
+def get_occupation(name: str) -> str:
+    """Gets the occupation of the given person
+    
+    Args:
+        name - name of the person
+        
+    Returns:
+        occupation of the given person
+    """
+    infobox_text = clean_text(get_first_infobox_text(get_page_html(name)))
+    print(infobox_text)
+    pattern = r"Occupation(?:.*?)(?P<occupation>[A-Za-z, ]+)"
+    error_text = (
+        "Page infobox has no occupation information"
+    )
+    match = get_match(infobox_text, pattern, error_text)
+
+    return match.group("occupation")
     
 
 # below are a set of actions. Each takes a list argument and returns a list of answers
@@ -224,6 +249,27 @@ def spouse_name(matches: List[str]) -> List[str]:
     """
     return [get_spouse_name(" ".join(matches))]
 
+def mother_name(matches: List[str]) -> List[str]:
+    """Returns mother name of named person in matches
+    
+    Args:
+        matches - match from pattern of persons name to find mother name
+    Returns:
+        mother name of named person
+    """
+    return [get_mother_name(" ".join(matches))]
+
+def occupation(matches: List[str]) -> List[str]:
+    """Returns occupation of named person in matched
+    
+    Args:
+        matches - match from pattern of persons name to find their occupation
+    
+    Returns:
+        occupation of named person"""
+    
+    return [get_occupation(" ".join(matches))]
+
 # dummy argument is ignored and doesn't matter
 def bye_action(dummy: List[str]) -> None:
     raise KeyboardInterrupt
@@ -240,7 +286,9 @@ pa_list: List[Tuple[Pattern, Action]] = [
     ("when was % born".split(), birth_date),
     ("when did % die".split(), death_date),
     ("what is the polar radius of %".split(), polar_radius),
-    ("who is % spouse" .split(), spouse_name),
+    ("Who is % spouse".split(), spouse_name),
+    ("What is % occupation".split(), occupation),
+    ("Who is % mother name".split(), mother_name),
     (["bye"], bye_action),
 
 ]
