@@ -150,7 +150,7 @@ def get_spouse_name(name: str) -> str:
         spouse name of the given person
     """
     infobox_text = clean_text(get_first_infobox_text(get_page_html(name)))
-    pattern = r"Spouse(?:.*?)(?P<spouse>[A-Z][A-Za-z]+)"
+    pattern = r"(?:Spouse)(?:.*?)(?P<spouse>[A-Z][A-Za-z]+)"
     error_text = (
         "Page infobox has no spouse information"
     )
@@ -158,7 +158,7 @@ def get_spouse_name(name: str) -> str:
 
     return match.group("spouse")
 
-def get_mother_name(name: str) -> str:
+def get_parent_name(name: str) -> str:
     """Gets the mother name of the given person
     
     Args:
@@ -168,14 +168,13 @@ def get_mother_name(name: str) -> str:
         mother name of the given person
     """
     infobox_text = clean_text(get_first_infobox_text(get_page_html(name)))
-    print(infobox_text)
-    pattern = r"Mother(?:.*?)(?P<mother>[A-Z][A-Za-z]+)"
+    pattern = r"Parents(?:.*?)(?P<parents>[A-Za-z, ]+)"
     error_text = (
         "Page infobox has no mother information"
     )
     match = get_match(infobox_text, pattern, error_text)
 
-    return match.group("mother")
+    return match.group("parents")
 
 
 def get_occupation(name: str) -> str:
@@ -189,7 +188,7 @@ def get_occupation(name: str) -> str:
     """
     infobox_text = clean_text(get_first_infobox_text(get_page_html(name)))
     print(infobox_text)
-    pattern = r"Occupation(?:.*?)(?P<occupation>[A-Za-z]+)"
+    pattern = r"Occupations(?:.*?)(?P<occupation>[A-Za-z]+)"
     error_text = (
         "Page infobox has no occupation information"
     )
@@ -249,7 +248,7 @@ def spouse_name(matches: List[str]) -> List[str]:
     """
     return [get_spouse_name(" ".join(matches))]
 
-def mother_name(matches: List[str]) -> List[str]:
+def parent_name(matches: List[str]) -> List[str]:
     """Returns mother name of named person in matches
     
     Args:
@@ -257,7 +256,7 @@ def mother_name(matches: List[str]) -> List[str]:
     Returns:
         mother name of named person
     """
-    return [get_mother_name(" ".join(matches))]
+    return [get_parent_name(" ".join(matches))]
 
 def occupation(matches: List[str]) -> List[str]:
     """Returns occupation of named person in matched
@@ -287,11 +286,11 @@ pa_list: List[Tuple[Pattern, Action]] = [
     ("when did % die".split(), death_date),
     ("what is the polar radius of %".split(), polar_radius),
 
-    ("Who is %'s spouse".split(), spouse_name),
+    ("who is % spouse".split(), spouse_name),
 
-    ("What is %'s occupation".split(), occupation),
+    ("what is % occupation".split(), occupation),
 
-    ("Who is %'s mother".split(), mother_name),
+    ("who are % parents".split(), get_parent_name),
     (["bye"], bye_action),
 
 ]
