@@ -287,7 +287,7 @@ pa_list: List[Tuple[Pattern, Action]] = [
     ("when did % die".split(), death_date),
     ("what is the polar radius of %".split(), polar_radius),
 
-    ("Who is *'s spouse".split(), spouse_name),
+    ("Who is %'s spouse".split(), spouse_name),
 
     ("What is %'s occupation".split(), occupation),
 
