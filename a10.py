@@ -132,7 +132,6 @@ def get_death_date(name: str) -> str:
         death date of the given person
     """
     infobox_text = clean_text(get_first_infobox_text(get_page_html(name)))
-    print(infobox_text)
     pattern = r"(?:Died)([\w \d,]+\()(?P<death>\d{4}-\d{2}-\d{2})"
     error_text = (
         "Page infobox has no death information (at least none in xxxx-xx-xx format)"
@@ -151,8 +150,7 @@ def get_spouse_name(name: str) -> str:
         spouse name of the given person
     """
     infobox_text = clean_text(get_first_infobox_text(get_page_html(name)))
-    print(infobox_text)
-    pattern = r"Spouse(?:.*?)(?P<spouse>[A-Z][A-Za-z .-]+)"
+    pattern = r"Spouse(?:.*?)(?P<spouse>[A-Z][A-Za-z]+)"
     error_text = (
         "Page infobox has no spouse information"
     )
@@ -171,13 +169,14 @@ def get_mother_name(name: str) -> str:
     """
     infobox_text = clean_text(get_first_infobox_text(get_page_html(name)))
     print(infobox_text)
-    pattern = r"Mother(?:.*?)(?P<mother>[A-Z][A-Za-z .-]+)"
+    pattern = r"Mother(?:.*?)(?P<mother>[A-Z][A-Za-z]+)"
     error_text = (
         "Page infobox has no mother information"
     )
     match = get_match(infobox_text, pattern, error_text)
 
     return match.group("mother")
+
 
 def get_occupation(name: str) -> str:
     """Gets the occupation of the given person
@@ -190,13 +189,14 @@ def get_occupation(name: str) -> str:
     """
     infobox_text = clean_text(get_first_infobox_text(get_page_html(name)))
     print(infobox_text)
-    pattern = r"Occupation(?:.*?)(?P<occupation>[A-Za-z, ]+)"
+    pattern = r"Occupation(?:.*?)(?P<occupation>[A-Za-z]+)"
     error_text = (
         "Page infobox has no occupation information"
     )
     match = get_match(infobox_text, pattern, error_text)
 
     return match.group("occupation")
+
     
 
 # below are a set of actions. Each takes a list argument and returns a list of answers
@@ -286,9 +286,12 @@ pa_list: List[Tuple[Pattern, Action]] = [
     ("when was % born".split(), birth_date),
     ("when did % die".split(), death_date),
     ("what is the polar radius of %".split(), polar_radius),
-    ("Who is % spouse".split(), spouse_name),
-    ("What is % occupation".split(), occupation),
-    ("Who is % mother name".split(), mother_name),
+
+    ("Who is *'s spouse".split(), spouse_name),
+
+    ("What is %'s occupation".split(), occupation),
+
+    ("Who is %'s mother".split(), mother_name),
     (["bye"], bye_action),
 
 ]
